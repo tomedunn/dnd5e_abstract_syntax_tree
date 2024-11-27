@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 import sys
 
+NODE_LIST = ['AttackRollNode','DamageNode','EmptyNode','ReferenceNode','RollNode','SaveRollNode','SelectionNode','ValueNode']
 
 def dict_to_node(node_dict):
     """Converts an abstract syntax tree in dictionary form into a node base representation.
@@ -53,13 +54,14 @@ class AttackRollNode:
         return f'{self.to_dict()}'
     
     def to_dict(self):
-        return {
-            'node': 'AttackRoll',
-            'critical_hit_range': self.critical_hit_range,
-            'critical_miss_range': self.critical_miss_range,
-            'attack_bonus': self.attack_bonus,
-            'armor_class': self.armor_class,
-        }
+        d = {'node': 'AttackRoll'}
+        for k, v in self.__dict__.items():
+            if type(v).__name__ in NODE_LIST:
+                d[k] = v.to_dict()
+            else:
+                d[k] = v
+
+        return d
 
 
 @dataclass
@@ -169,11 +171,14 @@ class SaveRollNode:
         return f'{self.to_dict()}'
     
     def to_dict(self):
-        return {
-            'node': 'SaveRoll',
-            'save_dc': self.save_dc,
-            'save_bonus': self.save_bonus,
-        }
+        d = {'node': 'SaveRoll'}
+        for k, v in self.__dict__.items():
+            if type(v).__name__ in NODE_LIST:
+                d[k] = v.to_dict()
+            else:
+                d[k] = v
+
+        return d
 
 
 @dataclass
@@ -209,10 +214,17 @@ class SelectionNode:
         return f'{self.to_dict()}'
     
     def to_dict(self):
+        results = {}
+        for k, v in self.results.items():
+            if type(v).__name__ in NODE_LIST:
+                results[k] = v.to_dict()
+            else:
+                results[k] = v
+        
         return {
             'node': 'Selection',
             'selector': self.selector.to_dict(),
-            'results': self.results,
+            'results': results,
         }
 
 
