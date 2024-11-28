@@ -229,6 +229,47 @@ class SelectionNode:
 
 
 @dataclass
+class TargetingNode:
+    """
+    type = control
+    Defines how targets are selected.
+        range: (string) a distance away from the character.
+        area: (dict) defines an area or volume of one of the allowed types.
+        max_targets: (int) the maximum number of targets that can be selected.
+        min_targets: (int) the minimum number of targets that can be selected. (is this needed?)
+    
+    Example:
+        {
+            'node': 'Targeting',
+            'range': '60 feet',
+            'area': {
+                'shape': 'cylinder',
+                'radius': '20 feet',
+                'height': '40 feet',
+            },
+            'max_targets': 2,
+            'min_targets': 0,
+        }
+    """
+    range: str
+    area: dict
+    max_targets: int
+    min_targets: int
+
+    def __repr__(self):
+        return f'{self.to_dict()}'
+    
+    def to_dict(self):
+        return {
+            'node': 'Targeting',
+            'range': self.range,
+            'area': self.area,
+            'max_targets': self.max_targets,
+            'min_targets': self.min_targets,
+        }
+    
+
+@dataclass
 class ValueNode:
     """
     type = value

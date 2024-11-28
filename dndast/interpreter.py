@@ -1,8 +1,12 @@
 from .nodes import *
 from .dice_roller import Dice_Roller
 from icepool import map, d, Die
+import math
 
 class Interpreter:
+    def __init__(self, targets={}):
+        self.targets = targets
+
     def evaluate(self, node, **kwargs):
         if type(node) in [str,int,float,list]:
             return node
@@ -69,6 +73,41 @@ class Interpreter:
         outcomes = self.evaluate(node.selector, **kwargs)
         results = {k: self.evaluate(v) for k, v in node.results.items()}
         return map(apply_results, outcomes, results)
+    
+    def evaluate_TargetingNode(self, node, **kwargs):
+        def feet(s):
+            return int(s.split(' ')[0])
+        
+        def calc_area(area):
+            match area['shape']:
+                case 'cone':
+                    return 0.5*feet(area['length'])**2
+                case 'cube':
+                    return feet(area['length'])**2
+                case 'cylinder':
+                    return math.pi*feet(area['radius'])**2
+                case 'emanation':
+                    return math.pi*feet(area['radius'])**2
+                case 'line':
+                    return feet(area['length'])*feet(area['width'])
+                case 'sphere':
+                    return math.pi*feet(area['radius'])**2
+                case _:
+                    return None # should be an error ... probably
+            
+        r = feet(node.range)
+        mr = 'melee' if r < 10 else 'ranged'
+
+        # determine the number of melee and ranged targets
+        if not node.area:
+            n = min(node.max_targets, self.targets[f'{mr}_maxtargets'])
+            targets = n*[self.targets[f'{mr}_target'].copy()]
+            return targets
+        else:
+            area = calc_area(node.area)
+            n = min(node.max_targets, self.targets[f'{mr}_maxtargets'], int(area/self.targets[f'{mr}_targetarea']))
+            targets = n*[self.targets[f'{mr}_target'].copy()]
+            return targets
     
     def evaluate_ValueNode(self, node, **kwargs):
         return node.value
