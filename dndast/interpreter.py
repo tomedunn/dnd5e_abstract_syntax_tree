@@ -19,8 +19,21 @@ class Interpreter:
     def evaluate_AndNode(self, node, **kwargs):
         result_a = self.evaluate(node.node_a, **kwargs)
         result_b = self.evaluate(node.node_b, **kwargs)
-        return [a + b for a in result_a for b in result_b]
+        return result_a + result_b
     
+    def evaluate_AttackNode(self, node, **kwargs):
+        def apply_results(outcome, results):
+            return results[outcome]
+        
+        results = {k: self.evaluate(v) for k, v in node.results.items()}
+        targets = self.evaluate(node.targeting, **kwargs)
+
+        value = 0
+        for target in targets:
+            outcomes = self.evaluate(node.attack_roll, target=target, **kwargs)
+            value += map(apply_results, outcomes, results)
+        return value
+
     def evaluate_AttackRollNode(self, node, **kwargs):
         def attack_outcomes(d20, chr, cmr, ab, ac):
             if d20 in chr:
@@ -53,6 +66,27 @@ class Interpreter:
         elif type(node.value) is dict:
             return Die(node.value)
     
+    def evaluate_SaveNode(self, node, **kwargs):
+        # determine the number of successes and failures
+        targets = self.evaluate(node.targeting, **kwargs)
+        SW = {'failure': 1, 'success': 0}
+        failures = 0
+        for target in targets:
+            outcome = self.evaluate(node.save_roll, target=target, **kwargs)
+            failures += Die({SW[k]: v for k, v in outcome.items()})
+        
+        # apply damage
+        def save_damage(targets, failures, failure_damage, success_multiplier):
+            """Used to convert the distribution of saving throw failures for a given number of targets into the total damage.
+            """
+            return failures*failure_damage + (targets - failures)*math.floor(success_multiplier*failure_damage)
+        
+        failure_damage = self.evaluate(node.results['failure'])
+        success_multiplier = node.results['success']
+
+        value = map(save_damage, len(targets), failures, failure_damage, success_multiplier)
+        return value
+
     def evaluate_SaveRollNode(self, node, **kwargs):
         def save_outcomes(d20, dc, sb):
             if d20 + sb >= dc:

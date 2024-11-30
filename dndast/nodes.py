@@ -21,6 +21,63 @@ def dict_to_node(node_dict):
 
 
 @dataclass
+class AttackNode:
+    """
+    type = ?
+    Represents an attack
+        targeting: (targeting) Determines the targets of the attack.
+        attack_roll: (roll) Determines the outcome.
+        results: (dict) A dictionary of values associated with each outcome.
+    
+    Example:
+        {
+            'node': 'Attack',
+            'targeting': {
+                'node': 'Targeting',
+                'range': '5 feet',
+                'area': None,
+                'max_targets': 1,
+                'min_targets': 0,
+            },
+            'attack_roll': {
+                'node': 'AttackRoll',
+                'critical_hit_range': [19,20],
+                'critical_miss_range': [1],
+                'attack_bonus': 4,
+                'armor_class': 10,
+            },
+            'result': {
+                'critical miss': 0,
+                'miss': 0,
+                'hit': 1,
+                'critical hit': 2,
+            },
+        }
+    """
+    targeting: any
+    attack_roll: any
+    results: dict
+
+    def __repr__(self):
+        return f'{self.to_dict()}'
+    
+    def to_dict(self):
+        results = {}
+        for k, v in self.results.items():
+            if type(v).__name__ in NODE_LIST:
+                results[k] = v.to_dict()
+            else:
+                results[k] = v
+        
+        return {
+            'node': 'Attack',
+            'targeting': self.targeting.to_dict(),
+            'attack_roll': self.attack_roll.to_dict(),
+            'results': results,
+        }
+
+
+@dataclass
 class AttackRollNode:
     """
     type = roll
@@ -146,6 +203,62 @@ class RollNode:
 
 
 @dataclass
+class SaveNode:
+    """
+    type = ?
+    Represents a save against one or more targets.
+        targeting: (targeting) Determines the targets of the save.
+        save_roll: (roll) Determines the outcome.
+        results: (dict) A dictionary of values associated with each outcome.
+    
+    Example:
+        {
+            'node': 'Save',
+            'targeting': {
+                'node': 'Targeting',
+                'range': '5 feet',
+                'area': None,
+                'max_targets': 1,
+                'min_targets': 0,
+            },
+            'save_roll': {
+                'node': 'SaveRoll',
+                'save_dc': 12,
+                'save_bonus': {
+                    'node': 'Reference',
+                    'value': 'target.dexterity_save_bonus',
+                },
+            },
+            'results': {
+                'failure': 1,
+                'success': 0.5,
+            },
+        }
+    """
+    targeting: any
+    save_roll: any
+    results: dict
+
+    def __repr__(self):
+        return f'{self.to_dict()}'
+    
+    def to_dict(self):
+        results = {}
+        for k, v in self.results.items():
+            if type(v).__name__ in NODE_LIST:
+                results[k] = v.to_dict()
+            else:
+                results[k] = v
+        
+        return {
+            'node': 'Save',
+            'targeting': self.targeting.to_dict(),
+            'save_roll': self.save_roll.to_dict(),
+            'results': results,
+        }
+
+
+@dataclass
 class SaveRollNode:
     """
     type = roll
@@ -267,7 +380,7 @@ class TargetingNode:
             'max_targets': self.max_targets,
             'min_targets': self.min_targets,
         }
-    
+
 
 @dataclass
 class ValueNode:
