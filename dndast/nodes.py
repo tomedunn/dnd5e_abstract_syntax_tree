@@ -1,7 +1,19 @@
 from dataclasses import dataclass
 import sys
 
-NODE_LIST = ['AttackRollNode','DamageNode','EmptyNode','ReferenceNode','RollNode','SaveRollNode','SelectionNode','ValueNode']
+NODE_LIST = [
+    'AttackNode',
+    'AttackRollNode',
+    'DamageNode',
+    'EmptyNode',
+    'ReferenceNode',
+    'RollNode',
+    'SaveNode',
+    'SaveRollNode',
+    'SelectionNode',
+    'TargetingNode',
+    'ValueNode',
+]
 
 def dict_to_node(node_dict):
     """Converts an abstract syntax tree in dictionary form into a node base representation.

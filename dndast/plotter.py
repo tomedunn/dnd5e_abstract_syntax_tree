@@ -3,14 +3,17 @@ from igraph import Graph
 
 
 NODE_COLORS = {
-    'AttackRollNode': 'rgba(231,  98,  62, 1)', # red
-    'DamageNode':     'rgba(171, 109, 172, 1)', # purple
-    'EmptyNode':      'rgba(145, 161, 178, 1)', # grey-blue
-    'ReferenceNode':  'rgba(122, 133,  59, 1)', # dirty-green
-    'RollNode':       'rgba(127,  81,  62, 1)', # brown-red
-    'SaveRollNode':   'rgba( 81, 165, 197, 1)', # teal-blue
-    'SelectionNode':  'rgba(181, 158,  84, 1)', # tan
-    'ValueNode':      'rgba( 80, 127,  98, 1)', # darker-green
+    'AttackNode':     'rgba(255,  98,  62, 1.0)', # red-ish
+    'AttackRollNode': 'rgba(231,  98,  62, 1.0)', # red
+    'DamageNode':     'rgba(171, 109, 172, 1.0)', # purple
+    'EmptyNode':      'rgba(145, 161, 178, 1.0)', # grey-blue
+    'ReferenceNode':  'rgba(122, 133,  59, 1.0)', # dirty-green
+    'RollNode':       'rgba(127,  81,  62, 1.0)', # brown-red
+    'SaveNode':       'rgba( 81, 165, 197, 1.0)', # teal-blue
+    'SaveRollNode':   'rgba( 81, 165, 255, 1.0)', # blue-ish
+    'SelectionNode':  'rgba(181, 158,  84, 1.0)', # tan
+    'TargetingNode':  'rgba(100, 158,  84, 1.0)', # tan-ish
+    'ValueNode':      'rgba( 80, 127,  98, 1.0)', # darker-green
 }
 
 def plot_tree_diagram(tree, **kwargs):
