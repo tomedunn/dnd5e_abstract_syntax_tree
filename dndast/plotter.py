@@ -145,17 +145,28 @@ def make_annotations(pos, text, **kwargs):
     return annotations
 
 
-def node_hovertext(node):
-    hovertext = '<b>'+node['node']+'</b>'
+def node_hovertext(node, hovertext=None):
+    if not hovertext:
+        is_root = True
+        hovertext = ['<b>'+node['node']+'</b>']
+    else:
+        is_root = False
+    
     for k, v in node.items():
         if k == 'node': continue
         if type(v) is dict:
             if 'node' in v:
-                hovertext += f'<br>{k}: ' + v['node'] + 'Node'
+                hovertext += [f'{k}: ' + v['node'] + 'Node']
             else:
-                hovertext += f'<br>{k}: {v}'
+                childtext = node_hovertext(v, hovertext=[f'{k}:'])
+                for i in range(1, len(childtext)):
+                    childtext[i] = '    ' + childtext[i]
+                hovertext += childtext
         else:
-            hovertext += f'<br>{k}: {v}'
+            hovertext += [f'{k}: {v}']
+    
+    if is_root:
+        hovertext = '<br>'.join(hovertext)
     return hovertext
 
 
