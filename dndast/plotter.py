@@ -1,19 +1,26 @@
 import plotly.graph_objects as go
 from igraph import Graph
 
-
+CATEGORY_COLORS = {
+    'Roll':      'rgba(127,  81,  62, 1.0)', # brown-red
+    'Effect':    'rgba( 81, 165, 197, 1.0)', # teal-blue
+    'Control':   'rgba(181, 158,  84, 1.0)', # tan
+    'Value':     'rgba( 80, 127,  98, 1.0)', # darker-green
+    'Reference': 'rgba(122, 133,  59, 1.0)', # dirty-green
+    
+}
 NODE_COLORS = {
-    'AttackNode':     'rgba(255,  98,  62, 1.0)', # red-ish
-    'AttackRollNode': 'rgba(231,  98,  62, 1.0)', # red
-    'DamageNode':     'rgba(171, 109, 172, 1.0)', # purple
-    'EmptyNode':      'rgba(145, 161, 178, 1.0)', # grey-blue
-    'ReferenceNode':  'rgba(122, 133,  59, 1.0)', # dirty-green
-    'RollNode':       'rgba(127,  81,  62, 1.0)', # brown-red
-    'SaveNode':       'rgba( 81, 165, 197, 1.0)', # teal-blue
-    'SaveRollNode':   'rgba( 81, 165, 255, 1.0)', # blue-ish
-    'SelectionNode':  'rgba(181, 158,  84, 1.0)', # tan
-    'TargetingNode':  'rgba(100, 158,  84, 1.0)', # tan-ish
-    'ValueNode':      'rgba( 80, 127,  98, 1.0)', # darker-green
+    'AttackNode':     CATEGORY_COLORS['Effect'],
+    'AttackRollNode': CATEGORY_COLORS['Roll'],
+    'DamageNode':     CATEGORY_COLORS['Effect'],
+    'EmptyNode':      CATEGORY_COLORS['Value'],
+    'ReferenceNode':  CATEGORY_COLORS['Reference'],
+    'RollNode':       CATEGORY_COLORS['Roll'],
+    'SaveNode':       CATEGORY_COLORS['Effect'],
+    'SaveRollNode':   CATEGORY_COLORS['Roll'],
+    'SelectionNode':  CATEGORY_COLORS['Control'],
+    'TargetingNode':  CATEGORY_COLORS['Reference'],
+    'ValueNode':      CATEGORY_COLORS['Value'],
 }
 
 def plot_tree_diagram(tree, **kwargs):
