@@ -53,12 +53,11 @@ class Interpreter:
         return outcomes
     
     def evaluate_ReferenceNode(self, node, **kwargs):
-        target, stat = node.value.split('.')
-        target = kwargs.get(target, None)
-        if target:
-            return target.get(stat, None)
-        else:
-            return None
+        value_list = node.value.split('.')
+        target = kwargs.get(value_list[0], None)
+        if not target: return None
+        if len(value_list) == 1: return target
+        return target.get(value_list[1], None)
     
     def evaluate_RollNode(self, node):
         if type(node.value) is str:

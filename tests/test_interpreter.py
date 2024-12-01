@@ -45,12 +45,16 @@ def test_interpreter_attackroll():
 
 
 def test_interpreter_reference():
-    tree = ReferenceNode('target.AC')
     target = {
         'AC': 10,
     }
     interpreter = Interpreter(targets=TARGETS)
+
+    tree = ReferenceNode('target.AC')
     assert 10 == interpreter.evaluate(tree, target=target)
+
+    tree = ReferenceNode('target')
+    assert target == interpreter.evaluate(tree, target=target)
 
 
 def test_interpreter_roll():
