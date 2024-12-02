@@ -20,16 +20,17 @@ def dict_to_node(node_dict):
     """
     if not node_dict:
         return EmptyNode()
+
+    for k, v in node_dict.items():
+        if type(v) == dict:
+            node_dict[k] = dict_to_node(v)
     
-    else:
+    if 'node' in node_dict:
         class_name = node_dict.pop('node')
         new_node = getattr(sys.modules[__name__], f'{class_name}Node')
-
-        for k, v in node_dict.items():
-            if type(v) == dict:
-                node_dict[k] = dict_to_node(v)
-        
         return new_node(**node_dict)
+    else:
+        return node_dict
 
 
 @dataclass
