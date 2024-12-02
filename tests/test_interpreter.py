@@ -72,41 +72,6 @@ def test_interpreter_attack():
     result = interpreter.evaluate(tree, target={'armor_class': 18})
     assert result == Die({0: 13, 1: 6, 2: 1})
 
-    """tree = AttackNode(
-        targeting = TargetingNode(**{
-            'range': '5 feet',
-            'area': None,
-            'max_targets': 2,
-            'min_targets': 0,
-        }),
-        attack_roll=AttackRollNode(**{
-            'critical_hit_range': [20],
-            'critical_miss_range': [1],
-            'attack_bonus': 4,
-            'armor_class': ReferenceNode('target.AC'),
-        }),
-        results={
-            'critical miss': 0,
-            'miss': 0,
-            'hit': RollNode('1d4'),
-            'critical hit': SaveNode(**{
-                'targeting': ReferenceNode('target'),
-                'save_roll': SaveRollNode(**{
-                    'save_dc': 12,
-                    'save_bonus': ReferenceNode('target.constitution_save_bonus'),
-                }),
-                'results': {
-                    'failure': RollNode('1d6'),
-                    'success': 0.5,
-                },
-            }),
-        },
-    )
-    interpreter = Interpreter(targets=TARGETS)
-    result = interpreter.evaluate(tree)"""
-    
-    #assert result == die
-
 
 def test_interpreter_attackroll():
     tree = AttackRollNode(**{
@@ -122,6 +87,17 @@ def test_interpreter_attackroll():
     result = interpreter.evaluate(tree, target=target)
     die = Die({'critical hit': 2, 'critical miss': 1, 'hit': 13, 'miss': 4})
     assert result == die
+
+
+def test_interpreter_damage():
+    interpreter = Interpreter(targets=TARGETS)
+    tree = DamageNode('1d6', 'slashing')
+    result = interpreter.evaluate(tree)
+    assert result.mean() == 3.5
+
+    tree = DamageNode({1: 1, 2: 1, 3: 1, 4: 1}, 'slashing')
+    result = interpreter.evaluate(tree)
+    assert result.mean() == 2.5
 
 
 def test_interpreter_reference():

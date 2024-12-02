@@ -135,7 +135,7 @@ class AttackRollNode:
 
 @dataclass
 class DamageNode:
-    equation: str
+    value: any
     type: str
 
     def __repr__(self):
@@ -144,7 +144,7 @@ class DamageNode:
     def to_dict(self):
         return {
             'node': 'Damage',
-            'equation': self.equation,
+            'value': self.value,
             'type': self.type
         }
 

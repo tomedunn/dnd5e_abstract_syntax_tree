@@ -56,6 +56,12 @@ class Interpreter:
                        self.evaluate(node.armor_class, **kwargs))
         return outcomes
     
+    def evaluate_DamageNode(self, node, **kwargs):
+        """This should be updated to factor in damage mitigation, 
+        like resistances and immunities.
+        """
+        return self.evaluate_RollNode(node)
+    
     def evaluate_ReferenceNode(self, node, **kwargs):
         value_list = node.value.split('.')
         target = kwargs.get(value_list[0], None)
