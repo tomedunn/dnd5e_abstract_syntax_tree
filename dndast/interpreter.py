@@ -27,11 +27,15 @@ class Interpreter:
         
         results = {k: self.evaluate(v) for k, v in node.results.items()}
         targets = self.evaluate(node.targeting, **kwargs)
+        if type(targets) is not list:
+            targets = [targets]
 
         value = 0
         for target in targets:
-            outcomes = self.evaluate(node.attack_roll, target=target, **kwargs)
+            kwargs['target'] = target
+            outcomes = self.evaluate(node.attack_roll, **kwargs)
             value += map(apply_results, outcomes, results)
+        
         return value
 
     def evaluate_AttackRollNode(self, node, **kwargs):
@@ -68,10 +72,14 @@ class Interpreter:
     def evaluate_SaveNode(self, node, **kwargs):
         # determine the number of successes and failures
         targets = self.evaluate(node.targeting, **kwargs)
+        if type(targets) is not list:
+            targets = [targets]
+        
         SW = {'failure': 1, 'success': 0}
         failures = 0
         for target in targets:
-            outcome = self.evaluate(node.save_roll, target=target, **kwargs)
+            kwargs['target'] = target
+            outcome = self.evaluate(node.save_roll, **kwargs)
             failures += Die({SW[k]: v for k, v in outcome.items()})
         
         # apply damage

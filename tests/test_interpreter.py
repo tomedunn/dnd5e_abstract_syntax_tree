@@ -28,6 +28,86 @@ TARGETS = {
     },
 }
 
+def test_interpreter_attack():
+    tree = AttackNode(
+        targeting=TargetingNode(**{
+            'range': '5 feet',
+            'area': None,
+            'max_targets': 1,
+            'min_targets': 0,
+        }),
+        attack_roll=AttackRollNode(**{
+            'critical_hit_range': [20],
+            'critical_miss_range': [1],
+            'attack_bonus': 4,
+            'armor_class': ReferenceNode('target.armor_class'),
+        }),
+        results={
+            'critical miss': 0,
+            'miss': 0,
+            'hit': 1,
+            'critical hit': 2,
+        },
+    )
+    interpreter = Interpreter(targets=TARGETS)
+    result = interpreter.evaluate(tree)
+    assert result == Die({0: 13, 1: 6, 2: 1})
+
+    tree = AttackNode(
+        targeting=ReferenceNode('target'),
+        attack_roll=AttackRollNode(**{
+            'critical_hit_range': [20],
+            'critical_miss_range': [1],
+            'attack_bonus': 4,
+            'armor_class': ReferenceNode('target.armor_class'),
+        }),
+        results={
+            'critical miss': 0,
+            'miss': 0,
+            'hit': 1,
+            'critical hit': 2,
+        },
+    )
+    interpreter = Interpreter(targets=TARGETS)
+    result = interpreter.evaluate(tree, target={'armor_class': 18})
+    assert result == Die({0: 13, 1: 6, 2: 1})
+
+    """tree = AttackNode(
+        targeting = TargetingNode(**{
+            'range': '5 feet',
+            'area': None,
+            'max_targets': 2,
+            'min_targets': 0,
+        }),
+        attack_roll=AttackRollNode(**{
+            'critical_hit_range': [20],
+            'critical_miss_range': [1],
+            'attack_bonus': 4,
+            'armor_class': ReferenceNode('target.AC'),
+        }),
+        results={
+            'critical miss': 0,
+            'miss': 0,
+            'hit': RollNode('1d4'),
+            'critical hit': SaveNode(**{
+                'targeting': ReferenceNode('target'),
+                'save_roll': SaveRollNode(**{
+                    'save_dc': 12,
+                    'save_bonus': ReferenceNode('target.constitution_save_bonus'),
+                }),
+                'results': {
+                    'failure': RollNode('1d6'),
+                    'success': 0.5,
+                },
+            }),
+        },
+    )
+    interpreter = Interpreter(targets=TARGETS)
+    result = interpreter.evaluate(tree)"""
+    
+    #assert result == die
+
+
 def test_interpreter_attackroll():
     tree = AttackRollNode(**{
         'critical_hit_range': [19,20],
@@ -66,6 +146,43 @@ def test_interpreter_roll():
     tree = RollNode({1: 1, 2: 1, 3: 1, 4: 1})
     result = interpreter.evaluate(tree)
     assert result.mean() == 2.5
+
+
+def test_interpreter_save():
+    tree = SaveNode(
+        targeting=TargetingNode(**{
+            'range': '5 feet',
+            'area': None,
+            'max_targets': 1,
+            'min_targets': 0,
+        }),
+        save_roll=SaveRollNode(**{
+            'save_dc': 12,
+            'save_bonus': ReferenceNode('target.constitution_save_bonus'),
+        }),
+        results={
+            'failure': 2,
+            'success': 0.5,
+        },
+    )
+    interpreter = Interpreter(targets=TARGETS)
+    result = interpreter.evaluate(tree)
+    assert result == Die({1: 11, 2: 9})
+
+    tree = SaveNode(
+        targeting=ReferenceNode('target'),
+        save_roll=SaveRollNode(**{
+            'save_dc': 12,
+            'save_bonus': ReferenceNode('target.constitution_save_bonus'),
+        }),
+        results={
+            'failure': 2,
+            'success': 0.5,
+        },
+    )
+    interpreter = Interpreter(targets=TARGETS)
+    result = interpreter.evaluate(tree, target={'constitution_save_bonus': 3})
+    assert result == Die({1: 12, 2: 8})
 
 
 def test_interpreter_saveroll():
