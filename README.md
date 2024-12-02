@@ -59,7 +59,7 @@ fig.update_layout(width=600, height=450)
 fig.show()
 ```
 
-![AST graph example](https://github.com/tomedunn/dndast/blob/master/assets/images/example-1.png?raw=true)
+![AST graph example](https://raw.githubusercontent.com/tomedunn/dnd5e_abstract_syntax_tree/refs/heads/main/assets/images/example-1.png)
 
 Mechanics represented in this way can be evaluated using the interpreter tool along with a targets dictionary. In this case, since the range of our attack is 5 feet, we only need to define a melee target. And, since the only attribute we need from the target is its armor class, we only need to give it that attribute.
 
