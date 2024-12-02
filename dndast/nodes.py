@@ -4,6 +4,7 @@ import sys
 NODE_LIST = [
     'AttackNode',
     'AttackRollNode',
+    'ConditionNode',
     'DamageNode',
     'EmptyNode',
     'ReferenceNode',
@@ -132,6 +133,31 @@ class AttackRollNode:
                 d[k] = v
 
         return d
+
+
+@dataclass
+class ConditionNode:
+    """
+    type = effect
+    Used to define a condition
+        value: (str) the name of the condition
+
+    Examples:
+        {
+            'node': 'Condition',
+            'value': 'Stunned',
+        }
+    """
+    value: str
+
+    def __repr__(self):
+        return f'{self.to_dict()}'
+    
+    def to_dict(self):
+        return {
+            'node': 'Condition',
+            'value': self.value,
+        }
 
 
 @dataclass

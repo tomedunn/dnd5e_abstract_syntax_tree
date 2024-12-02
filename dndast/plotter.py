@@ -12,6 +12,7 @@ CATEGORY_COLORS = {
 NODE_COLORS = {
     'AttackNode':     CATEGORY_COLORS['Effect'],
     'AttackRollNode': CATEGORY_COLORS['Roll'],
+    'ConditionNode':  CATEGORY_COLORS['Effect'],
     'DamageNode':     CATEGORY_COLORS['Effect'],
     'EmptyNode':      CATEGORY_COLORS['Value'],
     'ReferenceNode':  CATEGORY_COLORS['Reference'],
