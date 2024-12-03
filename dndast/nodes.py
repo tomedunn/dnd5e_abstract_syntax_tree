@@ -2,6 +2,7 @@ from dataclasses import dataclass
 import sys
 
 NODE_LIST = [
+    'AndNode',
     'AttackNode',
     'AttackRollNode',
     'ConditionNode',
@@ -32,6 +33,34 @@ def dict_to_node(node_dict):
         return new_node(**node_dict)
     else:
         return node_dict
+
+
+@dataclass
+class AndNode:
+    """
+    type = Control
+    Used when multiple effects need to be combined together.
+        values: (list) A list of effect nodes.
+    
+    Example:
+        {
+            'node': 'And',
+            'values': [
+                {'node': 'Damage', 'value': '3d6', 'type': 'slashing'},
+                {'node': 'Damage', 'value': '1d8', 'type': 'fire'},
+            ],
+        }
+    """
+    values: any
+
+    def __repr__(self):
+        return f'{self.to_dict()}'
+    
+    def to_dict(self):
+        return {
+            'node': 'And',
+            'values': [v.to_dict() for v in self.values],
+        }
 
 
 @dataclass

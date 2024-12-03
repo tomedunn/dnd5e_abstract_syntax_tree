@@ -28,6 +28,17 @@ TARGETS = {
     },
 }
 
+
+def test_interpreter_and():
+    tree = AndNode([
+        DamageNode('3d6', 'slashing'),
+        DamageNode('1d8', 'fire'),
+    ])
+    interpreter = Interpreter(targets=TARGETS)
+    result = interpreter.evaluate(tree)
+    assert result.mean() == 15.0
+
+
 def test_interpreter_attack():
     tree = AttackNode(
         targeting=TargetingNode(**{

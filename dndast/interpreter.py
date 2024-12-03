@@ -17,9 +17,7 @@ class Interpreter:
         return result
     
     def evaluate_AndNode(self, node, **kwargs):
-        result_a = self.evaluate(node.node_a, **kwargs)
-        result_b = self.evaluate(node.node_b, **kwargs)
-        return result_a + result_b
+        return sum([self.evaluate(v, **kwargs) for v in node.values])
     
     def evaluate_AttackNode(self, node, **kwargs):
         def apply_results(outcome, results):

@@ -10,6 +10,7 @@ CATEGORY_COLORS = {
     
 }
 NODE_COLORS = {
+    'AndNode':        CATEGORY_COLORS['Control'],
     'AttackNode':     CATEGORY_COLORS['Effect'],
     'AttackRollNode': CATEGORY_COLORS['Roll'],
     'ConditionNode':  CATEGORY_COLORS['Effect'],
@@ -163,6 +164,14 @@ def node_hovertext(node, hovertext=None):
                 for i in range(1, len(childtext)):
                     childtext[i] = '    ' + childtext[i]
                 hovertext += childtext
+        elif type(v) is list:
+            childtext = []
+            for i in v:
+                if type(i) is dict and 'node' in i:
+                    childtext += [i['node'] + 'Node']
+                else:
+                    childtext += [str(i)]
+            hovertext += [f'{k}: [' + ','.join(childtext) + ']']
         else:
             hovertext += [f'{k}: {v}']
     
