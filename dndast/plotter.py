@@ -191,20 +191,31 @@ def convert_tree(tree, i=0, ctree={}, nodes=[]):
         nodes = [tree.copy()]
     else:
         nodes += [tree.copy()]
+    
     for k, v in tree.items():
-        if type(v) != dict: continue
-
-        if v.get('node', None):
-            i += 1
-            ctree[iself] += [i]
-            ctree, nodes, i = convert_tree(v, i=i, ctree=ctree, nodes=nodes)
-        else:
-            for kk, vv in v.items():
+        if type(v) == list:
+            for vv in v:
                 if type(vv) != dict: continue
                 if vv.get('node', None):
                     i += 1
                     ctree[iself] += [i]
                     ctree, nodes, i = convert_tree(vv, i=i, ctree=ctree, nodes=nodes)
+                
+        elif type(v) == dict: 
+            if v.get('node', None):
+                i += 1
+                ctree[iself] += [i]
+                ctree, nodes, i = convert_tree(v, i=i, ctree=ctree, nodes=nodes)
+            else:
+                for kk, vv in v.items():
+                    if type(vv) != dict: continue
+                    if vv.get('node', None):
+                        i += 1
+                        ctree[iself] += [i]
+                        ctree, nodes, i = convert_tree(vv, i=i, ctree=ctree, nodes=nodes)
+        else:
+            continue
+    
     if iself == 0:
         return ctree, nodes
     else:
