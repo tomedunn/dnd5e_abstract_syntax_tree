@@ -7,7 +7,9 @@ NODE_LIST = [
     'AttackRollNode',
     'ConditionNode',
     'DamageNode',
+    'DurationNode',
     'EmptyNode',
+    'MoveNode',
     'ReferenceNode',
     'RollNode',
     'SaveNode',
@@ -26,6 +28,14 @@ def dict_to_node(node_dict):
     for k, v in node_dict.items():
         if type(v) == dict:
             node_dict[k] = dict_to_node(v)
+        elif type(v) == list:
+            for i in range(len(v)):
+                if type(v[i]) == dict:
+                    v[i] = dict_to_node(v[i])
+            """for e in v:
+                if type(e) == dict:
+                    e = dict_to_node(e)"""
+
     
     if 'node' in node_dict:
         class_name = node_dict.pop('node')
@@ -175,9 +185,11 @@ class ConditionNode:
         {
             'node': 'Condition',
             'value': 'Stunned',
+            'duration': {'node': 'Duration', 'value': ['1 minute']},
         }
     """
     value: str
+    duration: any
 
     def __repr__(self):
         return f'{self.to_dict()}'
@@ -186,6 +198,7 @@ class ConditionNode:
         return {
             'node': 'Condition',
             'value': self.value,
+            'duration': self.duration.to_dict(),
         }
 
 
@@ -202,6 +215,59 @@ class DamageNode:
             'node': 'Damage',
             'value': self.value,
             'type': self.type
+        }
+
+
+@dataclass
+class DurationNode:
+    """
+    type = ?
+    Used to determine when something ends.
+        value: (list) Everything that could end the duration.
+    
+    Example:
+        {
+            'node': 'Duration',
+            'value': [
+                "1 minute",
+                "concentration",
+            ],
+        }
+    """
+    value: list
+
+    def __repr__(self):
+        return f'{self.to_dict()}'
+    
+    def to_dict(self):
+        return {
+            'node': 'Duration',
+            'value': self.value,
+        }
+
+
+@dataclass
+class MoveNode:
+    """
+    type = effect
+    Moves a character some set amount.
+        value: (str) The distance moved.
+    
+    Example:
+        {
+            'node': 'Move',
+            'value': '15 ft',
+        }
+    """
+    value: str
+
+    def __repr__(self):
+        return f'{self.to_dict()}'
+    
+    def to_dict(self):
+        return {
+            'node': 'Move',
+            'value': self.value,
         }
 
 
